@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TRX 智能合约链TWO</title>
+    <link rel="stylesheet" href="modules/site/main/assets/styles/odometer-theme-digital.css">
+    <link rel="stylesheet" href="modules/site/main/assets/styles/styles1f78.css?1602611159">
+    <link rel="icon" href="modules/site/main/assets/images/favicon.png" type="image/png">
+    <meta name="sc.balance" content="999999">
+    <style>
+        [v-cloak] {
+            display: none
+        }
+    </style>
+</head>
+
+<body>
+    <main id="App" v-cloak>
+        <div class="header">
+            <div class="header__wrap">
+                <div class="header__item" v-if="tron.account">
+                    <div class="header__label">您的Tron钱包</div>
+                    <div class="header__value"><span v-text="tron.account"></span></div>
+                </div>
+                <div class="header__grow"></div>
+                <div class="header__item">
+                    <div class="header__label"></div>
+                    <div class="header__value lang">
+                        <div>Explore</div>
+                        <ul>
+                            <li><a href="https://cyberchain.cc/" target="_blank">CyberChain</a></li>
+                            <li><a href="https://uswap.me/" target="_blank">Uswap</a></li>
+                            <li><a href="https://ume.finance/" target="_blank">Ume.Finance</a></li>
+                            <li><a href="https://eclipcity.io/" target="_blank">Eclipcity</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="header__item">
+                    <div class="header__label">系统语言</div>
+                    <div class="header__value lang">
+                        <div><img src="https://api.smartcontract.ru/cdn/flags/zh.svg">中国</div>
+                        <ul>
+                            <li><a href="index_en.html?lang=en"><img
+                                        src="https://api.smartcontract.ru/cdn/flags/en.svg">English</a></li>
+                            <li><a href="index_es.html?lang=es"><img
+                                        src="https://api.smartcontract.ru/cdn/flags/es.svg">Español</a></li>
+                            <li><a href="index_ru.html?lang=ru"><img
+                                        src="https://api.smartcontract.ru/cdn/flags/ru.svg">Русский</a></li>
+                            <li><a href="index.html?lang=zh"><img
+                                        src="https://api.smartcontract.ru/cdn/flags/zh.svg">中国</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section class="section-top"><img class="top-logo" src="modules/site/main/assets/images/logoc81e.png?2"
+                width="96"> <img class="top-heading" src="modules/site/main/assets/images/logo-desktop.png"> <img
+                class="top-heading-mobile" src="modules/site/main/assets/images/logo-mobile.png">
+            <div class="container" v-show="tab === 'main'">
+                <p>一个智能合约的技术建立在金融系统上。<br>它是公开、公证、透明、不可串改的。</p>
+                <div class="counter-wrapper"><span>$</span>
+                    <div class="odometer" ref="odometer">{{ contract.balance * rates.trx }}</div>
+                </div>
+                <p>世界上第一个以去中心化分布式智能合约的社区支助基金会</p>
+                <div class="menu">
+                    <div><button class="button" @click.prevent="tab = 'tutorial'">
+                            <div class="button-content">如何加入</div>
+                            <div class="button-image"><img src="modules/site/main/assets/images/button.png"></div>
+                        </button></div>
+                    <div><button class="button" @click.prevent="tab = 'guide'">
+                            <div class="button-content">指南</div>
+                            <div class="button-image"><img src="modules/site/main/assets/images/button.png"></div>
+                        </button></div>
+                    <div><button class="button" @click.prevent="getPoolTopInfo(); tab = 'top'">
+                            <div class="button-content">全球六名排行榜冠军</div>
+                            <div class="button-image"><img src="modules/site/main/assets/images/button.png"></div>
+                        </button></div>
+                </div>
+            </div>
+        </section>
+        <section class="section calc bg-hidden" v-show="tab === 'main'">
+            <div class="container">
+                <h2 class="join">加入</h2>
+                <div class="panel-join">
+                    <div class="panel-join-background"><img class="desktop"
+                            src="modules/site/main/assets/images/join.svg"> <img class="mobile"
+                            src="modules/site/main/assets/images/mobile-join.png"></div>
+                    <div class="panel-join-display"><span>{{ deposit_amount.toFixed(0) }}</span><span>TRX</span></div>
+                    <div class="panel-join-values"><a href="#" @click.prevent="deposit_amount += 100">+ 100 TRX</a> <a
+                            href="#" @click.prevent="deposit_amount += 1000">+ 1K TRX</a> <a href="#"
+                            @click.prevent="deposit_amount += 10000">+ 10K TRX</a> <a href="#"
+                            @click.prevent="deposit_amount += 30000">+ 30K TRX</a> <a href="#"
+                            @click.prevent="deposit_amount += 50000">+ 50K TRX</a> <a href="#"
+                            @click.prevent="deposit_amount += 100000">+ 100K TRX</a></div>
+                    <div class="panel-join-controls"><button class="button" @click="deposit_amount = 0">
+                            <div class="button-content">撤销</div>
+                            <div class="button-image"><img src="modules/site/main/assets/images/button.png"></div>
+                        </button> <button class="button" @click="deposit()">
+                            <div class="button-content">加入</div>
+                            <div class="button-image"><img src="modules/site/main/assets/images/button.png"></div>
+                        </button></div>
+                </div>
+                <p>to join the project you need to use<br>the Tron wallet. <a href="guide/index.html"
+                        @click.prevent="tab = 'guide'">read more</a></p>
+            </div>
+        </section>
+        <section class="section" v-show="tab === 'main'">
+            <div class="container">
+                <h2>statistics</h2>
+                <div class="panel-info">
+                    <h3>智能合约</h3>
+                    <div>
+                        <div class="panel-info-item"><span>智能合约地址</span> <a
+                                :href="'https://tronscan.org/#/contract/' + contract_address" target="_blank">{{
+                                contract_address.substr(0, 8) }}...</a></div>
+                        <div class="panel-info-item"><span>合约存款TRX总数</span> <span class="ether-value">{{
+                                safe(contract.total_deposited.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>智能合约TRX结余</span> <span class="ether-value">{{
+                                safe(contract.balance.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>会员提币总数</span> <span class="ether-value">{{
+                                safe(contract.total_withdraw.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>每天1%奖励发放总数</span> <span class="ether-value">{{
+                                safe(contract.pool_balance.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>Daily pool countdown</span> <span class="ether-value"
+                                v-timer="contract.pool_last_draw * 1000">00:00:00</span></div>
+                        <div class="panel-info-item"><span>全球总数奖励池</span> <span class="ether-value">{{
+                                safe(contract.pool_lider.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>推荐人地址</span> <a
+                                v-if="tron.account && (user.upline || upline)"
+                                :href="'https://tronscan.org/#/address/' + (user.upline || upline)" target="_blank">{{
+                                (user.upline || upline).substr(0, 8)}}...</a> <span class="ether-value"
+                                v-if="!(tron.account && (user.upline || upline))">---</span></div>
+                    </div>
+                </div>
+                <div class="panel-info">
+                    <h3>个人统计信息</h3>
+                    <div>
+                        <div class="panel-info-item"><span>你的钱包地址</span> <a v-if="tron.account"
+                                :href="'https://tronscan.org/#/address/' + tron.account" target="_blank">{{
+                                tron.account.substr(0, 8)}}...</a> <span v-if="!tron.account"
+                                class="ether-value">---</span></div>
+                        <div class="panel-info-item"><span>时间倒数奖励</span> <span class="ether-value"
+                                v-timer="user.deposit_time * 1000">00:00:00</span></div>
+                        <div class="panel-info-item"><span>{{safe(user.max_payout === 0 ? 0
+                                :(user.max_payout/user.deposit_amount*100))}}%奖励回馈计算</span> <span class="ether-value">{{
+                                safe(Math.max(0, (user.max_payout - user.payouts)).toLocaleString())}} TRX</span></div>
+                        <div class="panel-info-item"><span>每天1%奖励</span> <span class="ether-value">{{
+                                safe(user.payout.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>直推推荐奖励</span> <span class="ether-value">{{
+                                safe(user.direct_bonus.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>团队收益奖励</span> <span class="ether-value">{{
+                                safe(user.match_bonus.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>全球前四名最佳推荐人奖励</span> <span class="ether-value">{{
+                                safe(user.pool_bonus.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>已提币总数</span> <span class="ether-value">{{
+                                safe(user.payouts.toLocaleString()) }} TRX</span></div>
+                        <div class="panel-info-item"><span>未提币总数</span> <span class="ether-value">{{ safe((user.payout +
+                                user.direct_bonus + user.match_bonus + user.pool_bonus).toLocaleString())}} TRX</span>
+                        </div>
+                        <div class="panel-info-item"><span></span><a class="btn" href="#" @click.prevent="withdraw()">💵
+                                提币</a></div>
+                    </div>
+                </div>
+                <div class="panel-info">
+                    <h3>统计数据</h3>
+                    <div>
+                        <div class="panel-info-item"><span>总存TRX币的数量</span> <span class="ether-value"
+                                v-text="safe(user.total_deposits.toLocaleString())"></span></div>
+                        <div class="panel-info-item"><span>总提TRX币的数量</span> <span class="ether-value"
+                                v-text="safe(user.total_payouts.toLocaleString())"></span></div>
+                    </div>
+                </div>
+                <div class="panel-info">
+                    <h3>组织</h3>
+                    <div>
+                        <div class="panel-info-item"><span>邀请链接</span> <a class="btn" v-if="tron.account"
+                                :href="document.URL + '#ref=' + tron.account" target="_blank"
+                                @click.prevent="copyText(document.URL+'#ref=' + tron.account)">复制</a>
+                            <span class="ether-value" v-if="!tron.account">---</span></div>
+                        <div class="panel-info-item"><span>直推合作伙伴</span> <span class="ether-value"
+                                v-text="safe(user.referrals)"></span></div>
+                        <div class="panel-info-item"><span>个人团队合作伙伴</span> <span class="ether-value"
+                                v-text="safe(user.total_structure)"></span></div>
+                        <div class="panel-info-item"><span>全球会员数量</span> <span class="ether-value"
+                                v-text="safe(contract.total_users)">?</span></div>
+                        <div class="panel-info-item" v-if="tron.account && user.total_structure > 0"><span></span> <a
+                                class="btn" href="#" @click.prevent="structure()">个人团队组织图</a></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section" v-show="tab === 'guide'">
+            <div class="page">
+                <h3>指南</h3>
+                <p>欢迎使用世界上第一个以TRON区块链和智能为基础的去中心化社区支持基金合同技术。</p>
+                <p>TRONCHAIN智能合约旨在为每个人提供独立的财务支持基金，基于智能合约技术，并由DEFI和通过ECLIPCITY在线游戏。</p>
+                <p>任何参与者都可以向社区基金捐款TRX，并支持TRONCHAIN社区 成员，参与者现在将激活合同代码并开始从以下位置获得支持 其他社区成员。</p>
+                <p>TRONCHAIN是100％下放的，是一个基于社区的项目；意思是没有保证也没有 仅从TRONCHAIN赚取的额外利润，您从TRONCHAIN收到的全部收益就来自其他
+                    社区成员，并根据您自己和社区的努力，因为这是一种P2P支持模型。</p>
+                <p>您支持他人，其他人也支持您。</p>
+                <p>TRONCHAIN实际上可以看作是分散的“第三方”，可以确保完全公平，算法代码确保所有人的透明度和正义性。</p>
+                <p>没有中介人或中介人，没有所有者，没有公司，没有首席执行官，也没有人际交往， 有效地保证了所有参与合作伙伴和合作伙伴资金的公平性， 智能合约的规则。</p>
+                <p>这是目前可用的最合理，最安全和最先进的财务支持模型 时间。</p>
+                <hr><br>
+                <p>您可以参加TRONCHAIN基金的最低存款额为100 TRX，您现在有资格 得到310％的回扣</p>
+                <p>310％的回报有4种方式（1种是被动的，3种是通过市场营销的），而310％是通过 在这4种方式中的任何一种方式下，必须使新的存款相等或更高，才能继续从基金中收取款项。</p>
+                <ol>
+                    <li>
+                        <p>每日1％的存款回报率（最长310天）为100％被动。</p>
+                    </li>
+                    <li>
+                        <p>分享和发展社区基金的10％直接推荐委员会。</p>
+                    </li>
+                    <li>
+                        <p>合伙人每次提款匹配委员会</p>
+                        <p>第一代30％<br>第二代10％<br>第三代10％<br>第四代10％<br>第五代10％<br>第六代8％<br>第七代8％<br>第8代8％<br>第9代8％<br>第10代8％<br>第11代5％<br>第12代5％<br>第13代5％<br>第14代5％<br>第15代5％
+                        </p>
+                        <p>为每个直接合作伙伴激活1个新级别，最多15个级别，请参见上文。</p>
+                    </li>
+                    <li>
+                        <p>每日最高推荐人池池中预留的所有存款的3％，每24小时分配10％排名前4位推荐者之间共享。</p>
+                    </li>
+                </ol>
+                <hr><br>
+                <p>最低和最高存款限额</p>
+                <p>第一个周期，最低存款100 TRX，最高100000 TRX。</p>
+                <p>第二个周期，等于或大于以前的存款，最高30万TRX。</p>
+                <p>第三个周期，等于或大于以前的存款，最高90万TRX。</p>
+                <p>第4个周期及以后，等于或大于以前的存款，最高2000000 TRX。</p>
+                <hr><br>
+                <p>重要说明*</p>
+                <p>* TRX CHAIN是一个基于社区的项目，通过智能合约进行100％分散的P2P交易。</p>
+                <p>*每个存款周期为310％。</p>
+                <p>*当收到310％的款项时，必须进行新的存款以继续从这4个帐户中的任何一个中赚钱/接收 方式。</p>
+                <p>**最低参赛人数为100 TRX，所有参与者均可参加，没有任何限制。</p>
+                <p>*无需推荐即可获得每天向所有会员支付的1％的款项，而100％则是被动的。</p>
+                <p>*通过TRX的营销/共享来增加社区基金，从而提高回报速度链。</p>
+                <p>* Admin和Dev团队正在开发和部署DEFI，市场营销，在线游戏， 加密借记卡，统一技术服务以及更多功能，可以实现完全去中心化的愿景 财务支持系统。</p><br><a
+                    href="index.html" @click.prevent="tab = 'main'">退回</a>
+            </div>
+        </section>
+        <section class="section" v-show="tab === 'tutorial'">
+            <div class="page">
+                <h3>如何加入</h3>
+                <p>要加入TRON CHAIN，您需要使用以下Dapp钱包之一。</p>
+                <p>要连接智能合约，请从以下位置下载，设置并为您的首选钱包注资 以下说明。</p>
+                <p>**必须强制使用推荐链接第一次存款到TRON CHAIN智能合约，请回来 介绍给您TRON CHAIN的人。</p>
+                <p>电话钱包-</p>
+                <p>TRON WALLET-在官方网站上下载：<br><a href="https://www.tronwallet.me/" target="_blank"
+                        rel="nofollow noopener noreferrer">https://www.tronwallet.me/</a></p>
+                <p>TRONWALLET是一个安全的p2p加密钱包，可用于TRON（TRX）交换</p>
+                <ol>
+                    <li>下载TRON WALLET并将其设置为手机</li>
+                    <li>带TRX的TRON资金钱包</li>
+                    <li>转到钱包中的Dapp浏览器并输入参考链接</li>
+                    <li>选择要存入的金额，然后单击加入</li>
+                </ol>
+                <hr>
+                <p>TRONLINK钱包-PC浏览器扩展</p>
+                <p>什么是TRONLINK？</p>
+                <p>TRONLINK可作为浏览器扩展程序和移动应用程序使用，TronLink为您提供了密钥库， 安全登录和令牌钱包-管理数字资产所需的一切。</p>
+                <p>TronLink在您的设备上生成密码和密钥，因此只有您可以访问您的帐户和 数据</p>
+                <p>如何下载TRONLINK浏览器扩展程序？</p>
+                <p>官方网站：<a href="https://www.tronlink.org/" target="_blank" rel="nofollow noopener noreferrer">
+                        https://www.tronlink.org/</a></p>
+                <p>如何将TRONLINK连接到TRON CHAIN智能合约？</p>
+                <p>使用TronLink打开Web浏览器下载<br>输入<a href="index.html" target="_blank"
+                        rel="nofollow noopener noreferrer">TRXCHAIN</a>（参考链接），然后单击Enter<br>允许TRONLINK钱包连接到<a
+                        href="index.html" target="_blank" rel="nofollow noopener noreferrer">TRXCHAIN</a></p>
+                <p>*首次加入TRON CHAIN，请按照以下步骤操作</p>
+                <p>复制邀请链接<br>将ref链接输入具有TRONLINK扩展名的PC浏览器<br>选择您想要存入的金额，最高100.000 TRX<br>点击加入并确认钱包中的交易</p><br><a
+                    href="index.html" @click.prevent="tab = 'main'">退回</a>
+            </div>
+        </section>
+        <section class="section" v-show="tab === 'top'">
+            <div class="container">
+                <div class="panel-info">
+                    <h3>全球六名排行榜冠军</h3>
+                    <div>
+                        <table style="text-transform:none;font-size:13px;line-height:2.5;width:100%">
+                            <thead>
+                                <tr>
+                                    <th width="60%">地址</th>
+                                    <th width="20%">TRX</th>
+                                    <th width="20%">收入</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(v, index) in pool_top">
+                                    <td v-text="v.address.substr(0, 16) + '..'"></td>
+                                    <td v-text="v.deposit"></td>
+                                    <td v-text="(contract.pool_balance / 1000 * [35,25,15,10,8,7][index]).toFixed(4)">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table><br>
+                        <div class="panel-info-item"><a class="btn" href="#" @click.prevent="tab = 'main'">退回</a></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="i-modal" v-if="upmodal.show">
+            <div class="i-modal__wrap">
+                <div class="i-modal__close" @click="upmodal.show = false"></div>
+                <div class="i-modal__body">
+                    <div class="i-modal__title">推荐者</div>
+                    <div class="i-modal__text">
+                        <div v-if="upmodal.edit"><input type="text"
+                                style="color:#000;padding:5px 10px;font-size:14px;border:1px solid #ccc;max-width:100%"
+                                size="50" v-model="upmodal.upline_edit"><br></div>
+                        <div v-if="!upmodal.edit" style="text-transform:none"><span class="addr">{{
+                                upmodal.upline}}</span><a href="javascript:;" @click="upmodal.edit = true">编辑</a></div>
+                        <br><button
+                            @click="/^T[1-9A-HJ-NP-Za-km-z]{33}$/i.test(upmodal.upline_edit ? upmodal.upline_edit : upmodal.upline) ? (!(upmodal.show = false) && deposit(upmodal.upline_edit ? upmodal.upline_edit : upmodal.upline)) : null">加入</button><br><br>
+                        <p style="text-transform:none">检查你的邀请地址。<br>你可以改变它之前进行存款。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content"><a href="https://t.me/trxchainofficial2" target="_blank" class="btn">🏛
+                官方TELEGRAM链接</a> <a href="https://t.me/trxchainofficial2" target="_blank" class="btn">🦹 客服团队</a></div>
+    </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="modules/site/main/assets/scripts/odometer.min.js"></script>
+    <script src="modules/site/main/assets/scripts/common.js?1606488023"></script>
+</body>
+
+</html>
